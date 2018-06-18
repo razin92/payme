@@ -73,6 +73,11 @@ class PaymentAPI(View):
         method = self.CreateTransaction.__name__
         params = json['params']
         transaction, created = Transaction.objects.get_or_create(paycom_transaction_id=params['id'])
+
+        if created:
+            transaction.create_time = datetime.datetime.now()
+            transaction.save()
+
         create_time = transaction.create_time
         create_time_timestamp = timestamp_from_datetime(create_time)
         transaction_id = transaction.id
@@ -117,7 +122,7 @@ class PaymentAPI(View):
     def PerformTransaction(self, request, json):
         method = self.PerformTransaction.__name__
         params = json['params']
-        transaction = get_object(Transaction, params['id'])
+        transaction = get_transaction(params['id'])
 
         if not transaction:
             return Response.error('not_found')
@@ -157,8 +162,12 @@ class PaymentAPI(View):
     def CancelTransaction(self, request, json):
         method = self.CancelTransaction.__name__
         params = json['params']
-        transaction = get_object(Transaction, params['id'])
-        reason = params['reason']
+        transaction = get_transaction(params['id'])
+
+        if 'reason' in params:
+            reason = params['reason']
+        else:
+            return Response.error('field_error')
 
         if not transaction:
             return Response.error('not_found')
@@ -218,7 +227,7 @@ class PaymentAPI(View):
     def CheckTransaction(self, request, json):
         method = self.CheckTransaction.__name__
         params = json['params']
-        transaction = get_object(Transaction, params['id'])
+        transaction = get_transaction(params['id'])
 
         if not transaction:
             return Response.error('not_found')
@@ -478,7 +487,8 @@ class OneCConnector(AuthData):
 
         return transaction_id
 
-def get_object(object, paycom_transaction_id=0):
+
+def get_transaction(paycom_transaction_id=0):
     try:
         transaction = Transaction.objects.get(
             paycom_transaction_id=paycom_transaction_id
@@ -508,7 +518,7 @@ def timestamp_from_datetime(datetime):
 
 def datetime_from_timestamp(timestamp):
     result = time.strftime(
-                    "%Y-%m-%d %H:%M:%S",
+                    "%Y-%m-%d %H:%M:%S:%f",
                     time.gmtime(
                         timestamp/1000
                     )

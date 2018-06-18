@@ -5,7 +5,7 @@ class Transaction(models.Model):
     paycom_transaction_id = models.CharField(max_length=25, unique=True)
     paycom_time = models.BigIntegerField(default=0)
     paycom_time_datetime = models.DateTimeField(blank=True, null=True, default=None)
-    create_time = models.DateTimeField(auto_now=True)
+    create_time = models.DateTimeField(blank=True, null=True, default=None)
     perform_time = models.DateTimeField(blank=True, null=True, default=None)
     cancel_time = models.DateTimeField(blank=True, null=True, default=None)
     amount = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
