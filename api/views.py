@@ -4,7 +4,7 @@ from django.views import View
 from .forms import TestForm
 from .auth import AuthData
 from ast import literal_eval
-from .models import Transaction
+from .models import Transaction, BasicAuth
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from .decorators import basic_auth
@@ -281,7 +281,17 @@ class PaymentAPI(View):
     # Смена пароля доступа к биллингу мерчанта
     def ChangePassword(self, request, json):
         method = self.ChangePassword.__name__
-        return Response.error()
+        params = json['params']
+        if 'password' in params:
+            try:
+                user = BasicAuth.objects.get('Payme')
+                user.password = params['password']
+                user.save()
+                return Response.success(method)
+            except:
+                return Response.error()
+
+        return Response.error('field_error')
 
 
 class Test(View):
