@@ -1,0 +1,5 @@
+<form action="{% url 'api' %}" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="TEST it !">
+</form>
