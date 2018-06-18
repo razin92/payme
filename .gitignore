@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+#Pycharm
+.idea/
+
 # Distribution / packaging
 .Python
 build/
@@ -110,3 +113,4 @@ payme/settings.py
 
 # private auth data
 api/auth.py
+.idea/workspace.xml
