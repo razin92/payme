@@ -114,3 +114,4 @@ payme/settings.py
 # private auth data
 api/auth.py
 .idea/workspace.xml
+api/tests.py

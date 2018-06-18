@@ -302,7 +302,7 @@ class Response:
                 'message': {
                     'ru': 'Неправильная сумма оплаты',
                     'uz': 'Notog\'ri tolov',
-                    'en': 'Wrong sum'
+                    'en': 'Wrong amount'
                 },
             },
             'not_found': {
