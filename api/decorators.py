@@ -7,7 +7,7 @@ error = {'error': {
             'id': 0,
             'message': {
                 'ru': 'Недостаточно прав для этого действия',
-                'uz': '',
+                'uz': 'Deny',
                 'en': 'Permission denied'
                 },
         }

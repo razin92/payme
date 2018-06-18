@@ -28,7 +28,7 @@ class DataTest(TestCase):
     def test(self):
         for x in range(1):
             data = {
-                'method': self.methods[1],
+                'method': self.methods[0],
                 'params': {
                     'id': 'dal84do9ejwt6wde9g2v3575',
                     'time': datetime.datetime.now().timestamp() * 1000,
@@ -57,10 +57,10 @@ class DataTest(TestCase):
             }
             #self.request = json.dumps(data)
             login = 'payme'
-            password = 'pass1word'
-            r = requests.post('http://127.0.0.1:8000/', json=data,  auth=(login, password))
+            password = 'password'
+            r = requests.post('http://127.0.0.1:8443/', json=data,  auth=(login, password))
             print('sum: %s\nid: %s' % (data['params']['amount'], data['params']['account']['uid']))
             print(r.status_code)
             print(r.headers)
-            print(r.json())
+            print(r.content)
             print('--------------------------------------------')
