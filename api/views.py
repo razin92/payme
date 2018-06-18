@@ -171,6 +171,7 @@ class PaymentAPI(View):
         cancel_timestamp = timestamp_from_datetime(cancel_time)
         uid = transaction.account
         amount = transaction.amount
+        id_tr = transaction.base_transaction_id
 
         if state == 1 or state == 0:
             transaction.state = -1
@@ -199,7 +200,11 @@ class PaymentAPI(View):
         if state == 2:
             if OneCConnector().check_balance(uid, amount):
 
-                # Отменить в 1С
+                try:
+                    OneCConnector().cancel_transaction(id_tr)
+                except:
+                    return Response.error()
+
                 transaction.state = -2
                 transaction.reason = reason
                 transaction.cancel_time = cancel_time
@@ -482,6 +487,15 @@ class OneCConnector(AuthData):
 
         return transaction_id
 
+    def cancel_transaction(self, id_tr):
+        url = 'hs/payme/cancel'
+        data = {
+            'ID': id_tr
+        }
+        r = self.ConnectorPOST(url, data)
+        result = (r.content)
+
+        return result
 
 def get_transaction(paycom_transaction_id=0):
     try:
