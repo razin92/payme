@@ -58,8 +58,9 @@ class DataTest(TestCase):
             #self.request = json.dumps(data)
             login = 'payme'
             password = 'password'
-            r = requests.post('http://127.0.0.1:8000/', json=data, auth=(login, password))
+            r = requests.post('http://127.0.0.1:8000/', json=data,  auth=(login, password))
             print('sum: %s\nid: %s' % (data['params']['amount'], data['params']['account']['uid']))
             print(r.status_code)
+            print(r.headers)
             print(r.json())
             print('--------------------------------------------')

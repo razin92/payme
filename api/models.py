@@ -13,3 +13,10 @@ class Transaction(models.Model):
     reason = models.SmallIntegerField(null=True, default=None)
     account = models.PositiveIntegerField(default=0)
     base_transaction_id = models.PositiveIntegerField(default=0)
+
+class BasicAuth(models.Model):
+    username = models.CharField(max_length=25, unique=True)
+    password = models.CharField(max_length=250)
+
+    def __str__(self):
+        return self.username

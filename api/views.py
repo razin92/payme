@@ -7,7 +7,7 @@ from ast import literal_eval
 from .models import Transaction
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from basicauth.decorators import basic_auth_required
+from .decorators import basic_auth
 import datetime
 import time
 import json
@@ -15,7 +15,7 @@ import json
 message_id = 0
 # Главный класс для принятия запросов от PayMe
 @method_decorator(csrf_exempt, 'dispatch')
-@method_decorator(basic_auth_required, 'dispatch')
+@method_decorator(basic_auth, 'dispatch')
 class PaymentAPI(View):
 
     methods = ('CheckPerformTransaction',
@@ -294,95 +294,95 @@ class Test(View):
 class Response:
 
     @staticmethod
-    def error(key='system_error', value=None):
+    def error(key='system_error', value=None, m_id=None):
 
         srv_errors = {
             'wrong_amount': {
                 'code': -31001,
                 'message': {
-                    'ru': '',
-                    'uz': '',
-                    'en': ''
+                    'ru': 'Неправильная сумма оплаты',
+                    'uz': 'Notog\'ri tolov',
+                    'en': 'Wrong sum'
                 },
             },
             'not_found': {
                 'code': -31003,
                 'message': {
-                    'ru': '',
-                    'uz': '',
-                    'en': ''
+                    'ru': 'Транзакция не найдена',
+                    'uz': 'Tranzakciya to\'pilmadi',
+                    'en': 'Transaction not found'
                 },
             },
             'cancel_error': {
                 'code': -31007,
                 'message': {
-                    'ru': '',
-                    'uz': '',
-                    'en': ''
+                    'ru': 'Отмена платежа невозможна',
+                    'uz': 'Tolovlaringizi qaytarib bo\'lmaydi',
+                    'en': 'Return payment denied'
                 },
             },
             'perform_error': {
                 'code': -31008,
                 'message': {
-                    'ru': '',
+                    'ru': 'Невозможно провести платеж',
                     'uz': '',
-                    'en': ''
+                    'en': 'Transaction perform error'
                 },
             },
             'uid_error': {
                 'code': -31050,
                 'message': {
-                    'ru': '',
+                    'ru': 'Абонент не найден',
                     'uz': '',
-                    'en': ''
+                    'en': 'Subscriber not found'
                 },
             },
             'not_post': {
                 'code': -32300,
                 'message': {
-                    'ru': '',
+                    'ru': 'Неправильный http метод',
                     'uz': '',
-                    'en': ''
+                    'en': 'Wrong http method'
                 },
             },
             'json_parse_error': {
                 'code': -32700,
                 'message': {
-                    'ru': '',
+                    'ru': 'Ошибка разбора JSON',
                     'uz': '',
-                    'en': ''
+                    'en': 'JSON parse error'
                 },
             },
             'field_error':  {
                 'code': -32600,
                 'message': {
-                    'ru': '',
+                    'ru': 'Указаны неправильные поля JSON',
                     'uz': '',
-                    'en': ''
+                    'en': 'JSON fields error'
                 },
             },
             'wrong_method': {
                 'code': -32601,
                 'message': {
-                    'ru': '',
+                    'ru': 'Неправильный метод',
                     'uz': '',
-                    'en': ''
+                    'en': 'Wrong method'
                 },
             },
             'no_permissions': {
                 'code': -32504,
                 'message': {
-                    'ru': '',
+                    'ru': 'Недостаточно прав для этого действия',
                     'uz': '',
-                    'en': ''
+                    'en': 'Permission denied'
                 },
             },
             'system_error': {
                 'code': -32400,
                 'message': {
-                    'ru': '',
+                    'ru': 'Системная ошибка',
                     'uz': '',
-                    'en': ''
+                    'en': 'System error'
                 },
             },
         }
@@ -396,6 +396,8 @@ class Response:
                 'message': key_value['message']
             }
         }
+        if m_id:
+            error['error']['id'] = m_id
 
         if value:
             reverse_srv_errors = {x: y for y, x in srv_errors.items()}
