@@ -73,13 +73,6 @@ class PaymentAPI(View):
         method = self.CreateTransaction.__name__
         params = json['params']
         transaction, created = Transaction.objects.get_or_create(paycom_transaction_id=params['id'])
-
-        if created:
-            transaction.create_time = datetime.datetime.now()
-            transaction.save()
-
-        create_time = transaction.create_time
-        create_time_timestamp = timestamp_from_datetime(create_time)
         transaction_id = transaction.id
 
         if created:
@@ -87,23 +80,23 @@ class PaymentAPI(View):
             if 'result' in check_perform:
                 transaction.state = 1
                 transaction.paycom_time = params['time']
-                transaction.paycom_time_datetime = time.strftime(
-                    "%Y-%m-%d %H:%M:%S",
-                    time.gmtime(
-                        params['time']/1000
-                    )
-                )
+                transaction.paycom_time_datetime = datetime_from_timestamp(params['time'])
                 transaction.account = params['account']['uid']
-                transaction.amount = params['amount']/100
+                transaction.amount = params['amount'] / 100
+                transaction.create_time = datetime.datetime.now()
                 transaction.save()
+                create_time_timestamp = timestamp_from_datetime(transaction.create_time)
 
                 return Response.success(method,
-                    create_time=create_time_timestamp,
-                    transaction=transaction_id,
-                    state=transaction.state
-                )
+                                        create_time=create_time_timestamp,
+                                        transaction=transaction_id,
+                                        state=transaction.state
+                                        )
 
             return check_perform
+
+        create_time = transaction.create_time
+        create_time_timestamp = timestamp_from_datetime(create_time)
 
         if transaction.state != 1 or timeout(transaction):
             return Response.error('perform_error')
@@ -518,7 +511,7 @@ def timestamp_from_datetime(datetime):
 
 def datetime_from_timestamp(timestamp):
     result = time.strftime(
-                    "%Y-%m-%d %H:%M:%S:%f",
+                    "%Y-%m-%d %H:%M:%S",
                     time.gmtime(
                         timestamp/1000
                     )
