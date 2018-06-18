@@ -30,7 +30,7 @@ class DataTest(TestCase):
             data = {
                 'method': self.methods[1],
                 'params': {
-                    'id': 'dal84do9ejws6wde9g2v3575',
+                    'id': 'dal84do9ejwt6wde9g2v3575',
                     'time': datetime.datetime.now().timestamp() * 1000,
                     'amount': randrange(2000000, 4000000),
                     'account': {
@@ -43,7 +43,7 @@ class DataTest(TestCase):
                 'method': self.methods[5],
                 'params': {
                     'from': 1528295411328,
-                    'to': 1538295411328
+                    'to': 1538295411328,
                 }
             }
             cancel = {

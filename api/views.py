@@ -507,7 +507,7 @@ def timeout(transaction):
 def timestamp_from_datetime(datetime):
     if datetime is None:
         return 0
-    return int(datetime.timestamp() * 1000)
+    return int(datetime.replace(microsecond=0).timestamp() * 1000)
 
 def datetime_from_timestamp(timestamp):
     result = time.strftime(
