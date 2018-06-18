@@ -200,9 +200,8 @@ class PaymentAPI(View):
         if state == 2:
             if OneCConnector().check_balance(uid, amount):
 
-                try:
-                    OneCConnector().cancel_transaction(id_tr)
-                except:
+                deleting = OneCConnector().cancel_transaction(id_tr)
+                if deleting == 'Fail':
                     return Response.error()
 
                 transaction.state = -2
@@ -488,7 +487,7 @@ class OneCConnector(AuthData):
         return transaction_id
 
     def cancel_transaction(self, id_tr):
-        url = 'hs/payme/cancel'
+        url = 'hs/payme/delete/'
         data = {
             'ID': id_tr
         }

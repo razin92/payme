@@ -28,9 +28,9 @@ class DataTest(TestCase):
     def test(self):
         for x in range(1):
             data = {
-                'method': self.methods[0],
+                'method': self.methods[2],
                 'params': {
-                    'id': 'dal84do9ejwt9wde9g2e3575',
+                    'id': 'dal84do9ejwt9wde9g2e3l75',
                     'time': datetime.datetime.now().timestamp() * 1000,
                     'amount': randrange(2000000, 4000000),
                     'account': {
@@ -51,7 +51,7 @@ class DataTest(TestCase):
                 "id": 36061,
                 "method": "CancelTransaction",
                 "params": {
-                    "id": "5b1e2765672b927853482dca",
+                    "id": "dal84do9ejwt9wde9g2e3l75",
                     "reason": 5
                 }
             }
@@ -60,7 +60,7 @@ class DataTest(TestCase):
             password = 'password'
             server = 'http://192.168.1.113:8443/'
             server2 = 'http://127.0.0.1:8000/'
-            r = requests.post(server, json=data,  auth=(login, password))
+            r = requests.post(server2, json=cancel,  auth=(login, password))
             print('sum: %s\nid: %s' % (data['params']['amount'], data['params']['account']['uid']))
             print(r.status_code)
             print(r.headers)
