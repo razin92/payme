@@ -53,12 +53,13 @@ class PaymentAPI(View):
 
         uid = json['params']['account']['uid']
         result = OneCConnector().check_id(uid)
+        print(result)
 
         if not result:
             # Ошибка, если невозможно осушествить оплату для данного UID
             return Response.error('uid_error')
 
-        if 'amount' in json['params']:
+        if 'amount' in json['params'] and result:
             amount = json['params']['amount']
             # Ограничения на сумму
             if 2000000 <= amount <= 30000000:
@@ -139,6 +140,8 @@ class PaymentAPI(View):
 
         # perform!
         tr_id = OneCConnector().perform_transaction(transaction.account, transaction.amount)
+        if tr_id == 'error':
+            return Response.error('perform_error')
         transaction.perform_time = datetime.datetime.now()
         perform_timestamp = timestamp_from_datetime(transaction.perform_time)
         transaction.state = 2
@@ -470,7 +473,7 @@ class Response:
 class OneCConnector(AuthData):
 
     def check_id(self, uid):
-        url = 'hs/payme/%s' % uid
+        url = 'hs/payme/get/%s' % uid
         response = self.Connector(url)
         parse = literal_eval(response.content.decode())
         return parse
@@ -488,13 +491,16 @@ class OneCConnector(AuthData):
         return False
 
     def perform_transaction(self, uid, amount):
-        url = 'hs/payme/'
+        url = 'hs/payme/post/'
         data = {
             'uid': uid,
             'amount': int(amount)
         }
         r = self.ConnectorPOST(url, data)
-        transaction_id = int(r.content)
+        try:
+            transaction_id = int(r.content)
+        except:
+            return 'error'
 
         return transaction_id
 
