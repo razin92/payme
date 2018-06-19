@@ -286,7 +286,7 @@ class PaymentAPI(View):
         params = json['params']
         if 'password' in params:
             try:
-                user = BasicAuth.objects.get(username='Payme')
+                user = BasicAuth.objects.get(username='Paycom')
                 user.password = params['password']
                 user.save()
                 return Response.success(method)
