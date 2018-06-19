@@ -13,6 +13,7 @@ error = {'error': {
         }
 }
 
+
 def basic_auth(func):
     def wrapped(request, *args, **kwargs):
         message_id = json.loads(request.body.decode('utf-8', 'ignore'))['id']
