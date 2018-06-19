@@ -8,6 +8,7 @@ from .models import Transaction, BasicAuth
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from .decorators import basic_auth
+import requests
 import datetime
 import time
 import json
@@ -143,6 +144,7 @@ class PaymentAPI(View):
         transaction.state = 2
         transaction.base_transaction_id = tr_id
         transaction.save()
+
 
         return Response.success(
             method,
@@ -284,7 +286,7 @@ class PaymentAPI(View):
         params = json['params']
         if 'password' in params:
             try:
-                user = BasicAuth.objects.get('Payme')
+                user = BasicAuth.objects.get(username='Payme')
                 user.password = params['password']
                 user.save()
                 return Response.success(method)
@@ -315,7 +317,7 @@ class Response:
                 'code': -31001,
                 'message': {
                     'ru': 'Неправильная сумма оплаты',
-                    'uz': 'Notog\'ri tolov',
+                    'uz': 'Notog\'ri to\'lov',
                     'en': 'Wrong amount'
                 },
             },
@@ -323,7 +325,7 @@ class Response:
                 'code': -31003,
                 'message': {
                     'ru': 'Транзакция не найдена',
-                    'uz': 'Tranzakciya to\'pilmadi',
+                    'uz': 'Tranzakciya topilmadi',
                     'en': 'Transaction not found'
                 },
             },
@@ -331,7 +333,7 @@ class Response:
                 'code': -31007,
                 'message': {
                     'ru': 'Отмена платежа невозможна',
-                    'uz': 'Tolovlaringizi qaytarib bo\'lmaydi',
+                    'uz': 'To\'lovlaringizi qaytarib iloji yoq',
                     'en': 'Return payment denied'
                 },
             },
@@ -339,7 +341,7 @@ class Response:
                 'code': -31008,
                 'message': {
                     'ru': 'Невозможно провести платеж',
-                    'uz': '',
+                    'uz': 'To\'lov qilish iloji yoq',
                     'en': 'Transaction perform error'
                 },
             },
@@ -347,7 +349,7 @@ class Response:
                 'code': -31050,
                 'message': {
                     'ru': 'Абонент не найден',
-                    'uz': '',
+                    'uz': 'Abonent topilmadi',
                     'en': 'Subscriber not found'
                 },
             },
@@ -355,7 +357,7 @@ class Response:
                 'code': -32300,
                 'message': {
                     'ru': 'Неправильный http метод',
-                    'uz': '',
+                    'uz': 'Notog\'ri http metod',
                     'en': 'Wrong http method'
                 },
             },
@@ -363,15 +365,15 @@ class Response:
                 'code': -32700,
                 'message': {
                     'ru': 'Ошибка разбора JSON',
-                    'uz': '',
-                    'en': 'JSON parse error'
+                    'uz': 'O\'qish xato JSON',
+                    'en': 'JSON parsing error'
                 },
             },
             'field_error':  {
                 'code': -32600,
                 'message': {
                     'ru': 'Указаны неправильные поля JSON',
-                    'uz': '',
+                    'uz': 'Ma\'lumotlar notog\'ri ko\'rsatilgan JSON ',
                     'en': 'JSON fields error'
                 },
             },
@@ -379,7 +381,7 @@ class Response:
                 'code': -32601,
                 'message': {
                     'ru': 'Неправильный метод',
-                    'uz': '',
+                    'uz': 'Noto\'gri metod',
                     'en': 'Wrong method'
                 },
             },
@@ -387,7 +389,7 @@ class Response:
                 'code': -32504,
                 'message': {
                     'ru': 'Недостаточно прав для этого действия',
-                    'uz': '',
+                    'uz': 'Qirish rad',
                     'en': 'Permission denied'
                 },
             },
@@ -395,7 +397,7 @@ class Response:
                 'code': -32400,
                 'message': {
                     'ru': 'Системная ошибка',
-                    'uz': '',
+                    'uz': 'Tizim xato',
                     'en': 'System error'
                 },
             },
