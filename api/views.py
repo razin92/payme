@@ -142,12 +142,19 @@ class PaymentAPI(View):
         tr_id = OneCConnector().perform_transaction(transaction.account, transaction.amount)
         if tr_id == 'error':
             return Response.error('perform_error')
+
         transaction.perform_time = datetime.datetime.now()
         perform_timestamp = timestamp_from_datetime(transaction.perform_time)
         transaction.state = 2
         transaction.base_transaction_id = tr_id
         transaction.save()
-
+        # Send TG message
+        AuthData().tg_notify(
+            transaction.account,
+            transaction.amount,
+            transaction.id,
+            tr_id
+        )
 
         return Response.success(
             method,
@@ -213,6 +220,15 @@ class PaymentAPI(View):
                 transaction.reason = reason
                 transaction.cancel_time = cancel_time
                 transaction.save()
+
+                # Send TG message
+                AuthData().tg_notify(
+                    transaction.account,
+                    transaction.amount,
+                    transaction.id,
+                    transaction.base_transaction_id,
+                    delete=True
+                )
 
                 return Response.success(
                     method,
